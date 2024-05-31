@@ -26,9 +26,10 @@ public class Report {
     private final MemberService memberService;
     @GetMapping("/mytask")
     public String sentMyReport(@AuthenticationPrincipal Member member, Model model){
-        List<Task> mytask=taskService.findAllByMember(member.getId());
-        model.addAttribute("mytask",mytask);
-        return "mytask";
+        List<Card> cards=cardService.findAllByMemberId(member.getId());
+        model.addAttribute("loggedUser",member);
+        model.addAttribute("cards",cards);
+        return "index";
     }
     @GetMapping("/report1")
     public String sentreport1(Model model){

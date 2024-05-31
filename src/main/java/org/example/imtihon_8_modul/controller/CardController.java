@@ -8,6 +8,7 @@ import org.example.imtihon_8_modul.entity.Member;
 import org.example.imtihon_8_modul.entity.enums.StatusCard;
 import org.example.imtihon_8_modul.service.CardService;
 import org.example.imtihon_8_modul.service.MemberService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -52,11 +53,11 @@ public class CardController {
         memberService.save(member);
         cardService.deleteById(id);
         return "redirect:/main";
-    }@GetMapping("change/{results}")
+    }
+//    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
+    @GetMapping("change/{results}")
     public String changeNext(@PathVariable String [] results ) {
-        for (String result : results) {
-            System.out.println(result);
-        }
+
 
         Integer cardId = Integer.parseInt(results[0]);
         Integer orderNumberOfCard = Integer.parseInt(results[1]);

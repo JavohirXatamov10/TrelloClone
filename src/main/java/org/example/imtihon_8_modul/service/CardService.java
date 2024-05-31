@@ -2,7 +2,6 @@ package org.example.imtihon_8_modul.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.imtihon_8_modul.entity.Card;
-import org.example.imtihon_8_modul.entity.Member;
 import org.example.imtihon_8_modul.projection.Report2;
 import org.example.imtihon_8_modul.repo.CardRepo;
 import org.springframework.stereotype.Service;
@@ -49,5 +48,12 @@ public class CardService {
             cards.get(i).setOrderId(i);
             cardRepo.save(cards.get(i));
         }
+    }
+
+
+
+
+    public List<Card> findAllByMemberId(Integer id) {
+        return cardRepo.findAllByMemberId(id);
     }
 }

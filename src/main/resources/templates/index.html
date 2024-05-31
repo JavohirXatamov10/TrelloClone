@@ -39,6 +39,8 @@
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
+                <a class="nav-link" href="/main">All</a>
+            </li><li class="nav-item">
                 <a class="nav-link" href="/report/mytask">My tasks</a>
             </li>
             <li class="nav-item">
@@ -50,7 +52,7 @@
             <li class="nav-item">
                 <a class="nav-link" href="/logout">Logout</a>
             </li>
-            <img th:src="@{/attachment/photo/{id}(id=${loggedUser.id})}" class="mr-3 rounded-circle" alt="User Picture"
+            <img th:src="@{/attachment/photo/{id}(id=${loggedUser.getId()})}" class="mr-3 rounded-circle" alt="User Picture"
                  style="width: 50px;">
 
         </ul>
@@ -70,7 +72,7 @@
                                 <a class="text-white" th:href="${'/card/change/'+card.getId()+','+(card.getOrderId()-1)}" th:if="${card.getOrderId()!=0}" th:text="${!cardStat.first} ? '⬅️' : ''"></a>
                                 <a th:href="|/card/editName/${card.id}|" class="mr-2">🖊</a>
                                 <a class="text-white" th:href="${'/card/change/'+card.getId()+','+(card.getOrderId()+1)}"  th:if="${!cardStat.last}">➡️</a>
-                                <a class="text-white" th:href="|/card/delete/${card.id}|">❌</a>
+<!--                                <a class="text-white" th:href="|/card/delete/${card.id}|">❌</a>-->
                             </div>
                         </div>
                     </div>

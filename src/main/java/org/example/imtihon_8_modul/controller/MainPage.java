@@ -11,6 +11,7 @@ import org.example.imtihon_8_modul.service.CardService;
 import org.example.imtihon_8_modul.service.MemberService;
 import org.example.imtihon_8_modul.service.TaskService;
 import org.springframework.boot.Banner;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
@@ -30,8 +31,8 @@ public class MainPage {
     private final CardService cardService;
     private final MemberService memberService;
     private final TaskService taskService;
-
     @GetMapping
+//    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
     public String sentToMainPage(Model model, @AuthenticationPrincipal Member member1) {
         List<Card> cards=cardService.findAll();
 
@@ -42,6 +43,7 @@ public class MainPage {
     }
 
     @PostMapping
+//    @PreAuthorize("hasRole('ADMIN')")
     public String addToCardDB(@ModelAttribute Card card, @AuthenticationPrincipal Member member1) {
         Member member= memberService.findById(member1.getId());
         member1=member;
@@ -61,8 +63,8 @@ public class MainPage {
         memberService.save(member1);
         return "redirect:/main";
     }
-
     @PostMapping("/addTask")
+    @PreAuthorize("hasRole('ADMIN')")
     public String drawTasks(@RequestParam("name") String name, @RequestParam("cardId") Integer id,@ModelAttribute Task task,@AuthenticationPrincipal Member member) {
         Card card = cardService.findById(id);
         List<Task> tasks=card.getTasks();

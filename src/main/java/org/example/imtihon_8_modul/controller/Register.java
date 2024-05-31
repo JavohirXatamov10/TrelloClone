@@ -53,7 +53,7 @@ public class Register {
                 .fullName(fullName)
                 .username(username)
                 .password(passwordEncoder.encode(password))
-                .roles(List.of(userRole.findById(1).get()))
+                .roles(List.of(userRole.findById(3).get()))
                 .photo(attachment)
                 .build();
         memberService.save(member);

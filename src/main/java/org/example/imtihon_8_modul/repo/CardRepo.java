@@ -15,6 +15,17 @@ public interface CardRepo extends JpaRepository<Card,Integer> {
     @Query(value = "select  c.name, count(tasks_id) as amount from card c join public.card_tasks ct on c.id = ct.card_id\n" +
             "group by c.id",nativeQuery = true)
     List<Report2> findAllTaskAmount();
-    @Query(value = "select c.*from card c join members_cards mc on c.id = mc.cards_id  where c.owner=1 and mc.member_id=c.owner" ,nativeQuery = true)
+    @Query(value = "select c.*from card c join members_cards mc on c.id = mc.cards_id  where c.owner=?1 and mc.member_id=c.owner" ,nativeQuery = true)
     List<Card> findAllByMember(Integer member1);
+
+    @Query(value = """
+       
+       select  DISTINCT c.* from card c
+           join members_cards mc on c.id = mc.cards_id
+                 join public.card_tasks ct on c.id = ct.card_id
+                   join task_members  tm on ct.tasks_id=tm.task_id
+       
+                 where c.owner=1 and mc.member_id=c.owner ;
+""",nativeQuery = true)
+    List<Card> findAllByMemberId(Integer id);
 }
