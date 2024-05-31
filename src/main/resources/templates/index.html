@@ -82,15 +82,24 @@
 
                     <div class="row d-flex">
                         <a th:text="${!cardStat.first} ? '⬅️' : ''"></a>
-                        <h3 class="text-dark " th:text="${task.getName()}"></h3>
+
+
+                        <a class="text-success" th:if="${task.finishTime != null && task.getDeadline() != null && task.finishTime.isBefore(task.getDeadline())}" th:text="${task.getName()}"></a>
+                        <a class="text-danger" th:if="${task.finishTime != null && task.getDeadline() != null && task.finishTime.isAfter(task.getDeadline())}" th:text="${task.getName()}"></a>
+                        <a class="text-dark" th:if="${task.finishTime == null || task.getDeadline() == null || task.finishTime.equals(task.getDeadline())}" th:text="${task.getName()}"></a>
+
+
+
                         <a  th:href="|/task/fillTasks/${task.id}|" class="mr-8">🖊</a>
                         <a   class="text-white" th:href="${'/task/change/'+card.getId()+','+(task.getId())}" th:if="${!cardStat.last}">➡️</a>
                     </div>
-                    <div class="row">
-                        <h5>🕔</h5>
-                        <h5>💬</h5>
-                        <img th:each="member:${task.getMembers()}" th:src="@{/attachment/photo/{id}(id=${member.id})}" class="mr-3 rounded-circle" alt="User Picture" style="width: 50px;">
-                    </div>
+                        <div class="row">
+                            <a th:if="${task.deadline == null}" th:text="' '"></a>
+                            <a th:if="${task.deadline != null}" th:text="'🕔'"></a>
+                            <a th:if="${!task.comments.isEmpty()}" th:text="'💬'"></a>
+                            <img th:each="member : ${task.members}" th:src="@{/attachment/photo/{id}(id=${member.id})}" class="mr-3 rounded-circle" alt="User Picture" style="width: 50px;">
+                        </div>
+
 
                     </div>
 

@@ -25,7 +25,7 @@ public interface CardRepo extends JpaRepository<Card,Integer> {
                  join public.card_tasks ct on c.id = ct.card_id
                    join task_members  tm on ct.tasks_id=tm.task_id
        
-                 where c.owner=1 and mc.member_id=c.owner ;
+                 where c.owner=1 and mc.member_id=c.owner order by order_id;
 """,nativeQuery = true)
     List<Card> findAllByMemberId(Integer id);
 }
