@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trello-like Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f4f5f7;
+        }
+
+        .card {
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.25rem;
+        }
+
+        .container-fluid {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">MyBoard</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/report/mytask">My tasks</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/report/report1">Report1</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/report/report2">Report2</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/logout">Logout</a>
+            </li>
+            <img th:src="@{/attachment/photo/{id}(id=${loggedUser.id})}" class="mr-3 rounded-circle" alt="User Picture"
+                 style="width: 50px;">
+
+        </ul>
+    </div>
+</nav>
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div th:each="card : ${cards}" class="col-md-3">
+            <div class="card">
+                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                    <div>
+                        <span th:text="${card.name}"></span>
+                    </div>
+
+                        <div>
+                            <div class="d-flex" >
+                                <a class="text-white" th:href="${'/card/change/'+card.getId()+','+(card.getOrderId()-1)}" th:if="${card.getOrderId()!=0}" th:text="${!cardStat.first} ? '⬅️' : ''"></a>
+                                <a th:href="|/card/editName/${card.id}|" class="mr-2">🖊</a>
+                                <a class="text-white" th:href="${'/card/change/'+card.getId()+','+(card.getOrderId()+1)}"  th:if="${!cardStat.last}">➡️</a>
+                                <a class="text-white" th:href="|/card/delete/${card.id}|">❌</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div  th:each="task:${card.getTasks()}"  class="card  text-dark d-flex justify-content-between align-items-center">
+
+
+                    <div class="row d-flex">
+                        <a th:text="${!cardStat.first} ? '⬅️' : ''"></a>
+                        <h3 class="text-dark " th:text="${task.getName()}"></h3>
+                        <a  th:href="|/task/fillTasks/${task.id}|" class="mr-8">🖊</a>
+                        <a   class="text-white" th:href="${'/task/change/'+card.getId()+','+(task.getId())}" th:if="${!cardStat.last}">➡️</a>
+                    </div>
+                    <div class="row">
+                        <h5>🕔</h5>
+                        <h5>💬</h5>
+                        <img th:each="member:${task.getMembers()}" th:src="@{/attachment/photo/{id}(id=${member.id})}" class="mr-3 rounded-circle" alt="User Picture" style="width: 50px;">
+                    </div>
+
+                    </div>
+
+
+
+
+<!--                <div class="card-body">-->
+<!--                    <div class="tasks">-->
+<!--                        <div th:each="task : ${card.getTasks()}" class="task mb-2 position-relative">-->
+<!--                            <a th:href="|/task/fillTasks/${task.id}|" class="btn btn-close-white"-->
+<!--                               th:text="${task.name}"></a>-->
+<!--                            <a th:href="|/task/fillTasks/${task.id}|" class="btn btn-close-white position-absolute" style="right: 10px; top: 10px">🖊</a>-->
+<!--                            <p th:text="${task.getName()}"></p>-->
+
+<!--                        </div>-->
+<!--                    </div>-->
+
+                    <div>
+                        <form th:action="|/main/addTask|" method="post">
+                            <input type="hidden" th:value="${card.id}" name="cardId">
+                            <input type="text" name="name" class="form-control mb-2" placeholder="Enter task name"
+                                   required>
+                            <button type="submit" class="btn btn-outline-primary btn-block">Add Task</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <form action="/main" method="post">
+                <label>
+                    <input type="text" name="name" placeholder="Enter name" class="form-control">
+                </label>
+                <button class="btn btn-success mt-2">Add</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Trello-like Dashboard</title>-->
+<!--    &lt;!&ndash; Bootstrap CSS &ndash;&gt;-->
+<!--    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">-->
+<!--</head>-->
+<!--<body>-->
+<!--<nav class="navbar navbar-expand-lg navbar-light bg-light">-->
+<!--    <a class="navbar-brand" href="#">MyBoard</a>-->
+<!--    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"-->
+<!--            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">-->
+<!--        <span class="navbar-toggler-icon"></span>-->
+<!--    </button>-->
+<!--    <div class="collapse navbar-collapse" id="navbarNav">-->
+<!--        <ul class="navbar-nav ml-auto">-->
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link" href="#">Logout</a>-->
+<!--            </li>-->
+<!--        </ul>-->
+<!--    </div>-->
+<!--</nav>-->
+<!--<div class="container-fluid mt-4">-->
+<!--    <div class="row">-->
+<!--        <div th:each="card:${cards}" class="col-md-3">-->
+<!--            <div class="card">-->
+<!--                <div class="c
+ard-header bg-primary text-white">-->
+<!--                    <h5 th:text="${card.name}"></h5>-->
+<!--                </div>-->
+<!--                <div class="card-body">-->
+<!--                    <form action="/TaskController" method="post">-->
+<!--                        <div class="form-group">-->
+<!--                            <input type="text" name="task_name" class="form-control mb-2" placeholder="Enter TaskController name">-->
+<!--                            <button type="submit" class="btn btn-outline-primary btn-block">Add Task</button>-->
+<!--                        </div>-->
+<!--                    </form>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="col-md-3">-->
+<!--            <form action="/main" method="post">-->
+<!--                <label>-->
+<!--                    <input type="text" name="name" placeholder="enter name">-->
+<!--                </label>-->
+<!--                <button type="submit" class="btn btn-success">Add</button>-->
+<!--            </form>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>-->
+<!--<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>-->
+<!--<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>-->
+<!--</body>-->
+<!--</html>-->

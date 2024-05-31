@@ -1,0 +1,36 @@
+    <!DOCTYPE html>
+    <html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Report 1</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    </head>
+    <body>
+    <div class="container">
+        <h1 class="my-4">Task Report</h1>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>On time</th>
+                <th>After deadline</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="task : ${mytask}">
+                <td th:text="${task.name}"></td>
+                <td th:text="${task.startTime}"></td>
+                <td th:text="${task.finishTime}"></td>
+                <td th:text="${task.deadline}"></td></td>
+
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    </body>
+    </html>
+
+
+
+</nav>
+</body>
+</html>

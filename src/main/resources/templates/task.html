@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Entry Page</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h4>Task Edit</h4>
+            <a href="/main" class="btn btn-danger ">&times;</a>
+        </div>
+        <div class="card-body">
+
+            <div class="form-group">
+                <h3 th:text="${chosenTask.name}"></h3>
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                <form th:action="|/task/editName/${chosenTask.id}|" method="post">
+                    <label for="editInput">
+                    <input name="editName" type="text" class="form-control" id="editInput" placeholder="Enter new task name">
+                    </label>
+                    <button type="submit" class="btn btn-primary mt-2">Edit</button>
+                </form>
+            </div>
+
+            <div class="form-group">
+                <h5>Choose user</h5>
+                <form th:action="|/task/addMember/${chosenTask.id}|" method="post">
+                    <label for="userSelector">
+                        <select name="member" class="form-control" id="userSelector">
+                            <option value="">Select User</option>
+                            <option th:each="member:${members}" th:text="${member.username}" th:value="${member.id}"></option>
+                        </select>
+                    </label>
+                    <button type="submit" class="btn btn-primary mt-2">save</button>
+                </form>
+            </div>
+
+            <div class="mt-4 d-flex ">
+                <div th:each="member : ${taskMembers}">
+                    <div class="media w-25">
+                        <div class="media-body d-flex justify-content-between ">
+                            <div>
+                            <img th:src="@{/attachment/photo/{id}(id=${member.id})}" class="mr-3 rounded-circle" alt="User Picture" style="width: 50px;">
+                            <h5 th:text="${member.username}"></h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+            <h4 class="mt-2">Attachments</h4>
+            <div class="form-group d-flex ">
+                <form  action="/task/addFile" method="post" enctype="multipart/form-data" >
+                    <input type="hidden" th:value="${chosenTask.id}" name="taskId">
+                    <input name="file" type="file" class="form-control" id="uploadImage">
+                    <div>
+                    <button class="btn btn-dark mt-2"> Ok </button>
+                    </div>
+                </form>
+            </div>
+
+
+
+
+            <div class="mt-4 d-flex ">
+                <div th:each="attachment : ${taskAttachment}">
+                    <div class="media w-25">
+                        <div class="media-body d-flex justify-content-between ">
+                            <div>
+                                <img th:src="@{/attachment/downloadFile/{id}(id=${attachment.id})}" class="mr-3 rounded-circle" alt="User Picture" style="width: 50px;">
+                                <h5 th:text="${attachment.name}"></h5>
+                                <a th:href="|/download/downloadFile/${chosenTask.getId()},${attachment.getId()}|"   class="btn btn-dark text-white">Download</a>
+                                <a class="btn btn-dark text-white">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <div class="d-flex" >
+
+            <div class="form-group" style="margin-right: 100px">
+                <div class="row">
+                    <h5>Deadline</h5>
+                    <label for="deadline">
+                        <a href="#" id="deadline" class="m-2">
+                            <span th:if="${chosenTask != null and chosenTask.deadline != null}" th:text="${chosenTask.deadline}"></span>
+                            <span th:unless="${chosenTask != null and chosenTask.deadline != null}">No deadline</span>
+                        </a>
+                    </label>
+                    <form action="/task/deleteDeadline" method="post" th:if="${chosenTask != null}">
+                        <input type="hidden" name="id" th:value="${chosenTask.id}">
+                        <button class="btn btn-close-white m-2">Delete</button>
+                    </form>
+                </div>
+                    <form action="/task/addDeadLine" method="post">
+                    <input type="hidden" name="id" th:value="${chosenTask.id}">
+                    <label for="date">
+                        <input type="datetime-local" class="form-control mr-2" id="date" name="deadline">
+                    </label>
+                    <button type="submit" class="btn btn-primary mt-2">OK</button>
+                    </form>
+            </div>
+
+            <div class="form-group">
+                <div class="row">
+                    <h5>Finish time</h5>
+                    <label for="deadline">
+                        <a href="#" id="finish" class="m-2">
+                            <span th:if="${chosenTask != null and chosenTask.finishTime != null}" th:text="${chosenTask.finishTime}"></span>
+                            <span th:unless="${chosenTask != null and chosenTask.finishTime != null}">Task not completed</span>
+                        </a>
+                    </label>
+                    <form action="/task/deleteFinishTime" method="post" th:if="${chosenTask != null}">
+                        <input type="hidden" name="id" th:value="${chosenTask.id}">
+                        <button class="btn btn-close-white m-2">Delete</button>
+                    </form>
+                </div>
+                <form action="/task/addFinishTime" method="post">
+                    <input type="hidden" name="id" th:value="${chosenTask.id}">
+                    <label for="finishDate">
+                        <input type="datetime-local" class="form-control mr-2" id="finishDate" name="finishTime">
+                    </label>
+                    <button type="submit" class="btn btn-primary mt-2">OK</button>
+                </form>
+            </div>
+            </div>
+
+
+            <div class="form-group">
+                    <label for="commentInput">Add Comment:</label>
+                    <form action="/task/addComment" method="post">
+                        <input name="userId" type="hidden" th:value="${currentTaskOwner.id}">
+                        <input name="currentTaskId" type="hidden" th:value="${chosenTask.id}">
+                        <textarea name="comment" class="form-control" id="commentInput" rows="3" placeholder="Write a comment..."></textarea>
+                        <button type="submit" class="btn btn-success mt-2">Send</button>
+                    </form>
+            </div>
+
+            <div class="mt-4">
+                <div th:each="comment : ${comments}">
+                    <div class="media w-25">
+                        <div class="media-body d-flex justify-content-between ">
+                            <img th:src="@{/attachment/photo/{id}(id=${comment.member.id})}" class="mr-3 rounded-circle" alt="User Picture" style="width: 50px;">
+                            <h5 th:text="${comment.text}"></h5>
+                            <div>
+
+<!--                                <form action="/task/deleteComment" method="post" style="display:inline;">-->
+<!--                                    <button name="id" th:value="${comment.id}" class="btn btn-danger btn-sm">Delete</button>-->
+<!--                                </form>-->
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+        </div>
+        </div>
+    </div>
+</div>
+
+<!-- jQuery and Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
